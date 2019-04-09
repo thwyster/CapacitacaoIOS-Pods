@@ -39,14 +39,18 @@ class ViewController: UIViewController {
                 //criar a URL
                 let urlImage = URL(string: imagePath)
                 
-                // Fazer o download da image
-                let bytes = try? Data(contentsOf: urlImage!)
-                
-                //Criar Imagem apartir dos dados lidos
-                let image = UIImage(data: bytes!)
-                
-                //Mostrar image na view
-                self.imvCapaFilme.image = image
+                DispatchQueue.global().async { [weak self] in
+                    // Fazer o download da image
+                    if let bytes = try? Data(contentsOf: urlImage!){
+                        //Criar Imagem apartir dos dados lidos
+                        if let image = UIImage(data: bytes) {
+                            DispatchQueue.main.async {
+                                //Mostrar image na view
+                                self!.imvCapaFilme.image = image
+                            }
+                        }
+                    }
+                }
             }
         }
     }
